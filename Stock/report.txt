@@ -1,22 +1,40 @@
 Discussion
 How did you preprocess this dataset ?
 
-資料前處理的部分我先用每天的Open Price減去Close Price來得出當日股票的漲跌。若爲漲設爲1，跌則設爲0。 此外，我也把Open Price, High Price, Low Price, Close Price以及Volume分別對日期的圖給視覺化出來，以得出一些對數據的直觀感受。例如在整個test set中，股市成交量（volume）整體上都比train set的時期來得少，這對之後的分析有著重要的作用。此外，我也用了圓餅圖來呈現2009年至2017年股市單日漲的天數占了54.6%，單日跌的天數則爲45.4%，這表示我們之後的分類器train accuracy需大於54.6%，否則全部猜漲的準確率還比較高。 最後我使用的feature包括Open Price, High Price以及Low Price, 捨棄了Date以及Volume這兩個feature，會在下面第三題做出説明。
+資料前處理的部分我先用每天的Open Price減去Close Price來得出當日股票的漲跌。若爲漲設爲1，跌則設爲0。 
+此外，我也把Open Price, High Price, Low Price, Close Price以及Volume分別對日期的圖給視覺化出來，
+以得出一些對數據的直觀感受。例如在整個test set中，股市成交量（volume）整體上都比train set的時期來得少，
+這對之後的分析有著重要的作用。此外，我也用了圓餅圖來呈現2009年至2017年股市單日漲的天數占了54.6%，
+單日跌的天數則爲45.4%，這表示我們之後的分類器train accuracy需大於54.6%，否則全部猜漲的準確率還比較高。
+最後我使用的feature包括Open Price, High Price以及Low Price, 捨棄了Date以及Volume這兩個feature，會在下面第三題做出説明。
 
 Which classifier reaches the highest classification accuracy in this dataset ?
 
-從以上的結果來看，Neural Network的Test Accuracy最高，達到了85.3%，其次是Logistic Regression，為82.5%，效果最差的kNN，只有64.7%。
+從以上的結果來看，Neural Network的Test Accuracy最高，達到了85.3%，其次是Logistic Regression，
+為82.5%，效果最差的kNN，只有64.7%。
 
 Why ?
 
-kNN的做法遇到了overfitting的問題，他的Train Accuracy達到了84.3%，而Test Accuracy只有64.9%。我有試著調整n_neighbors這個參數，結果設爲5已經是最好的結果了。 Logistic Regression的做法在很短的時間内就能得到Baseline Test Accuracy，在82.5%左右。Logistic Regression主要解決二分類問題，用來表示某件事情發生的可能性，所以在這個資料集能獲得還算不錯的準確率，因爲此資料集就是要預測單日股票漲跌的可能性。 而在Neural Network中，我使用了最簡單的FeedForward Neural Network。我在此模型中跑了1000個epoch，才得到了85.3%的Test Accuracy。但由於Neural Network模型處於“黑箱狀態”，很難以理解內部機制，所以其實他跑得比較好的原因不是很清楚。
+kNN的做法遇到了overfitting的問題，他的Train Accuracy達到了84.3%，而Test Accuracy只有64.9%。
+我有試著調整n_neighbors這個參數，結果設爲5已經是最好的結果了。 Logistic Regression的做法在很短的時間内就能得到Baseline Test Accuracy，
+在82.5%左右。Logistic Regression主要解決二分類問題，用來表示某件事情發生的可能性，所以在這個資料集能獲得還算不錯的準確率，因
+爲此資料集就是要預測單日股票漲跌的可能性。 而在Neural Network中，我使用了最簡單的FeedForward Neural Network。我在此模型中跑
+了1000個epoch，才得到了85.3%的Test Accuracy。但由於Neural Network模型處於“黑箱狀態”，很難以理解內部機制，所以其實他跑得比較好的原因不是很清楚。
 
 Can this result remain if the dataset is different ?
 
-如果資料集不一樣的話，結果會不同。拿Neural Network的例子來説，就算是一樣的資料集，一樣的模型和一樣的參數，但由於模型開始計算的起始點不同，都會造成很不一樣的結果。
+如果資料集不一樣的話，結果會不同。拿Neural Network的例子來説，就算是一樣的資料集，一樣的模型和一樣的參數，
+但由於模型開始計算的起始點不同，都會造成很不一樣的結果。
 
 How did you improve your classifiers ?
 
-我一開始把Volume也當成feature喂進去資料裏面，結果非常糟糕，Logistic Regression的Test Accuracy只有64%，後來把這個feature拿掉後，就有現在的準確率了。我也曾經想把Date和Volume換成其他形式的feature加入到模型中來提升準確率，但效果並沒有變好。我的做法是把date換成season，也就是4個季度，其中1、2、3月在第一季度，4、5、6月在第二季度，以此類推，所以我的資料多了一個season的feature，結果準確率和沒用這個feature的時候一摸一樣，就被我捨棄了。我也嘗試把Volume區分爲3個區間分別是High， Normal和Low來放進去當feature，但最終的準確率也沒有變高。 而在Neural Network的方法中，一開始我的epoch只設100，train和test結果很糟糕，我以爲是learning rate太大導致模型學不到規律而underfitting了。結果調小learning rate過後，準確率和loss反而卡在了同一個地方，似乎是local minimum。所以最後我再把learning rate設成default，把epoch設到1000讓模型去跑，就得到了85.3%的Test Accuracy了。
+我一開始把Volume也當成feature喂進去資料裏面，結果非常糟糕，Logistic Regression的Test Accuracy只有64%，
+後來把這個feature拿掉後，就有現在的準確率了。我也曾經想把Date和Volume換成其他形式的feature加入到模型中來提升準確率，
+但效果並沒有變好。我的做法是把date換成season，也就是4個季度，其中1、2、3月在第一季度，4、5、6月在第二季度，以此類推，
+所以我的資料多了一個season的feature，結果準確率和沒用這個feature的時候一摸一樣，就被我捨棄了。我也嘗試把Volume區分爲3個區間分別是High， 
+Normal和Low來放進去當feature，但最終的準確率也沒有變高。 而在Neural Network的方法中，一開始我的epoch只設100，train和test結果很糟糕，
+我以爲是learning rate太大導致模型學不到規律而underfitting了。結果調小learning rate過後，準確率和loss反而卡在了同一個地方，
+似乎是local minimum。所以最後我再把learning rate設成default，把epoch設到1000讓模型去跑，就得到了85.3%的Test Accuracy了。
 
-還有在下面的cell中，我把High Price與Open Price的差距存入High，把Low Price與Open Price的差距存入Low，結果就用這兩個features就得到比上面的Logistic Regression還高的準確率。
+還有在下面的cell中，我把High Price與Open Price的差距存入High，把Low Price與Open Price的差距存入Low，結果就用這兩個features就
+得到比上面的Logistic Regression還高的準確率。
